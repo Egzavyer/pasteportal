@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 import uvicorn
 from threading import Thread
 import pyperclip
@@ -7,7 +7,7 @@ from time import monotonic, sleep
 
 
 class ClipboardRequest(BaseModel):
-    text: str
+    text: str = Field(min_length=1, max_length=65536)
 
 
 class Server:

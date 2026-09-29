@@ -6,21 +6,27 @@ from pathlib import Path
 import logging
 
 from src.server import Server
-from src.discovery import advertise_service
+from src.network import watch_network
 
 PORT = 43127
 HOSTNAME = "pasteportal-a7f2.local."
 
 
-def get_local_ip() -> str:
-    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
-        sock.connect(("8.8.8.8", 1))
-        return sock.getsockname()[0]
+def get_local_ip() -> str | None:
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
+            sock.connect(("8.8.8.8", 1))
+            ip = sock.getsockname()[0]
+
+        if ip == "0.0.0.0" or ip.startswith("127."):
+            return None
+
+        return ip
+    except OSError:
+        return None
 
 
 def main():
-
-    lan_ip = get_local_ip()
 
     def on_quit(icon, item):
         icon.stop()
@@ -32,21 +38,19 @@ def main():
     icon = pystray.Icon("PaperclipIcon", image, "PastePortal", menu)
 
     with ExitStack() as cleanup:
-        server = Server(host=lan_ip, port=PORT)
+        server = Server(host="0.0.0.0", port=PORT)
         cleanup.callback(server.stop)
         server.start()
 
-        logging.info("Server started on %s:%s", lan_ip, PORT)
+        logging.info("HTTP server listening on port %s", PORT)
 
         cleanup.enter_context(
-            advertise_service(
-                ip=lan_ip,
+            watch_network(
+                get_ip=get_local_ip,
                 port=PORT,
                 hostname=HOSTNAME,
             )
         )
-
-        logging.info("Service advertised as", HOSTNAME)
 
         icon.run()
 
