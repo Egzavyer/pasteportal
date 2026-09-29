@@ -1,6 +1,6 @@
 # PastePortal
 
-A fast and simple utility to paste text from iPhone
+A fast and simple Windows tray utility to paste text from iPhone
 
 ## How to Use
 
