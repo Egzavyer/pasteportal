@@ -1,6 +1,6 @@
 # PastePortal
 
-A fast and simple utility to paste text from iphone shortcut
+A fast and simple utility to paste text from iPhone
 
 ## How to Use
 
