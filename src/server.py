@@ -20,6 +20,7 @@ class Server:
             app=self.app,
             host=host,
             port=port,
+            loop="asyncio:SelectorEventLoop",
             log_level="info",
             log_config=None,
             timeout_graceful_shutdown=5,
