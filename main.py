@@ -3,6 +3,7 @@ from PIL import Image
 import socket
 from contextlib import ExitStack
 from pathlib import Path
+import logging
 
 from src.server import Server
 from src.discovery import advertise_service
@@ -35,7 +36,7 @@ def main():
         cleanup.callback(server.stop)
         server.start()
 
-        print(f"Server started on {lan_ip}:{PORT}")
+        logging.info("Server started on %s:%s", lan_ip, PORT)
 
         cleanup.enter_context(
             advertise_service(
@@ -45,10 +46,20 @@ def main():
             )
         )
 
-        print(f"Service advertised as {HOSTNAME}")
+        logging.info("Service advertised as", HOSTNAME)
 
         icon.run()
 
 
 if __name__ == "__main__":
-    main()
+    logging.basicConfig(
+        filename=Path(__file__).resolve().parent / "pasteportal.log",
+        level=logging.INFO,
+        format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+        encoding="utf-8",
+    )
+
+    try:
+        main()
+    except Exception:
+        logging.exception("PastePortal failed")

@@ -21,6 +21,7 @@ class Server:
             host=host,
             port=port,
             log_level="info",
+            log_config=None,
             timeout_graceful_shutdown=5,
         )
 
