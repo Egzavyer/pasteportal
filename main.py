@@ -24,7 +24,7 @@ def main():
     def on_quit(icon, item):
         icon.stop()
 
-    icon_path = Path(__file__).resolve().parent / "paperclip.png"
+    icon_path = Path(__file__).resolve().parent / "paperclip.ico"
     image = Image.open(icon_path)
 
     menu = pystray.Menu(pystray.MenuItem("Quit", on_quit))
